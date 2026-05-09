@@ -2,59 +2,65 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #1a1a2e;
-  color: white;
-  padding: 0 32px;
-  height: 60px;
+  background-color: var(--color-bg-surface);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 0 40px;
+  height: 64px;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 1px 20px rgba(0,0,0,0.4);
 }
 
 .brand {
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-accent);
+  text-transform: uppercase;
 }
 
 .links {
   list-style: none;
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 
 .links a {
-  color: rgba(255,255,255,0.75);
+  color: var(--color-text-secondary);
   text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
   font-weight: 600;
-  font-size: 0.95rem;
-  transition: background 0.2s, color 0.2s;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color var(--transition), background var(--transition);
   position: relative;
 }
 
 .links a:hover {
-  color: white;
-  background: rgba(255,255,255,0.1);
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
 }
 
 .active {
-  color: white !important;
-  background: rgba(255,255,255,0.15) !important;
+  color: var(--color-accent) !important;
+  background: var(--color-accent-muted) !important;
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #e74c3c;
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  font-size: 0.72rem;
+  background: var(--color-accent);
+  color: #0f0f0f;
+  border-radius: var(--radius-full);
+  width: 18px;
+  height: 18px;
+  font-size: 0.68rem;
   font-weight: 700;
   margin-left: 6px;
   vertical-align: middle;

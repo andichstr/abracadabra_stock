@@ -13,14 +13,16 @@
 
 .id {
   font-weight: 700;
-  font-size: 1rem;
-  color: #1a1a2e;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
 }
 
 .total {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #27ae60;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--color-accent);
 }
 
 .meta {
@@ -28,6 +30,6 @@
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-  color: #777;
-  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
 }

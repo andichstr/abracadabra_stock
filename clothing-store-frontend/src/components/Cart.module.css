@@ -1,22 +1,25 @@
 .cart {
-  background: white;
-  border-radius: 12px;
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-lg);
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  margin-top: 24px;
+  border: 1px solid var(--color-border);
+  margin-top: 0;
 }
 
 .title {
+  font-family: var(--font-display);
   font-size: 1.2rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 16px;
-  color: #1a1a2e;
+  color: var(--color-text-primary);
+  letter-spacing: 0.02em;
 }
 
 .empty {
   text-align: center;
-  color: #aaa;
-  padding: 24px;
+  color: var(--color-text-muted);
+  padding: 32px;
+  font-size: 0.9rem;
 }
 
 .list {
@@ -33,7 +36,7 @@
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .itemInfo {
@@ -44,12 +47,13 @@
 
 .itemName {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--color-text-primary);
 }
 
 .itemPrice {
-  color: #777;
-  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
 }
 
 .itemActions {
@@ -59,23 +63,27 @@
 }
 
 .qty {
-  width: 30px;
+  width: 28px;
   text-align: center;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
 }
 
 .footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
 }
 
 .total {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #1a1a2e;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-accent);
 }
 
 .footerActions {
