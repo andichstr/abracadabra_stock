@@ -1,6 +1,6 @@
 /*
  * PALETA: abracadabra_stock
- * Estética: Boutique minimalista — oscuro sofisticado con dorado cálido
+ * Estética: Boutique femenina — crema cálida con acento coral/rosa
  *
  * Para adaptar a otro negocio, crear un nuevo archivo palette.css
  * con las mismas variables y reemplazar este. El resto del CSS no cambia.
@@ -8,32 +8,32 @@
 
 :root {
   /* === COLORES BASE === */
-  --color-bg:           #0f0f0f;      /* Fondo principal: negro profundo */
-  --color-bg-surface:   #1a1a1a;      /* Tarjetas, modales, navbar */
-  --color-bg-elevated:  #242424;      /* Inputs, dropdowns, hover states */
-  --color-bg-overlay:   rgba(0, 0, 0, 0.70); /* Overlay de modales */
+  --color-bg:           #f7f3ef;      /* Fondo principal: crema cálida */
+  --color-bg-surface:   #ffffff;      /* Tarjetas, modales, navbar */
+  --color-bg-elevated:  #f0ebe5;      /* Inputs, dropdowns, hover states */
+  --color-bg-overlay:   rgba(30, 20, 16, 0.50); /* Overlay de modales */
 
   /* === TEXTO === */
-  --color-text-primary:   #f5f0e8;    /* Texto principal: crema cálida */
-  --color-text-secondary: #a89f8c;    /* Texto secundario: arena */
-  --color-text-muted:     #5c5549;    /* Texto deshabilitado/placeholder */
+  --color-text-primary:   #1e1a18;    /* Texto principal: carbón oscuro */
+  --color-text-secondary: #6b5c54;    /* Texto secundario: marrón cálido */
+  --color-text-muted:     #b0a09a;    /* Texto deshabilitado/placeholder */
 
-  /* === ACENTO PRINCIPAL: dorado cálido === */
-  --color-accent:         #c9a84c;    /* Dorado principal */
-  --color-accent-hover:   #e2bc6a;    /* Dorado claro (hover) */
-  --color-accent-muted:   rgba(201, 168, 76, 0.15); /* Dorado traslúcido (badges) */
+  /* === ACENTO PRINCIPAL: coral/rosa del logo === */
+  --color-accent:         #d4706a;    /* Coral principal */
+  --color-accent-hover:   #c05a54;    /* Coral oscuro (hover) */
+  --color-accent-muted:   rgba(212, 112, 106, 0.12); /* Coral traslúcido (badges) */
 
   /* === BORDES === */
-  --color-border:         #2e2b26;    /* Borde estándar */
-  --color-border-focus:   #c9a84c;    /* Borde en focus (igual que accent) */
+  --color-border:         #e4dbd5;    /* Borde estándar */
+  --color-border-focus:   #d4706a;    /* Borde en focus (igual que accent) */
 
   /* === SEMÁNTICOS === */
   --color-success:        #4a7c59;
-  --color-success-bg:     rgba(74, 124, 89, 0.15);
-  --color-danger:         #9b3a3a;
-  --color-danger-bg:      rgba(155, 58, 58, 0.15);
+  --color-success-bg:     rgba(74, 124, 89, 0.12);
+  --color-danger:         #b83232;
+  --color-danger-bg:      rgba(184, 50, 50, 0.12);
   --color-info:           #3a6b8a;
-  --color-info-bg:        rgba(58, 107, 138, 0.15);
+  --color-info-bg:        rgba(58, 107, 138, 0.12);
 
   /* === TIPOGRAFÍA === */
   --font-display: 'Cormorant Garamond', 'Georgia', serif;  /* Títulos elegantes */
@@ -47,10 +47,10 @@
   --radius-full: 999px;
 
   /* === SOMBRAS === */
-  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
-  --shadow-lg:  0 8px 40px rgba(0,0,0,0.6);
-  --shadow-accent: 0 0 20px rgba(201, 168, 76, 0.15);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,0.14);
+  --shadow-accent: 0 0 20px rgba(212, 112, 106, 0.15);
 
   /* === TRANSICIONES === */
   --transition: 0.2s ease;
