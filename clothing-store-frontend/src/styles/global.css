@@ -168,7 +168,7 @@ input::placeholder, textarea::placeholder {
 
 input:focus, select:focus, textarea:focus {
   border-color: var(--color-border-focus);
-  box-shadow: 0 0 0 3px rgba(212, 112, 106, 0.15);
+  box-shadow: 0 0 0 3px rgba(201, 96, 122, 0.15);
 }
 
 select option {

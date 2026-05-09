@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createProduct } from '../api/productApi'
 import { getCategories } from '../api/categoryApi'
+import { uploadImage } from '../api/uploadApi'
 import styles from './ProductFormModal.module.css'
 
 const EMPTY_FORM = {
@@ -21,12 +22,31 @@ function ProductFormModal({ onClose, onCreated }) {
   const [categories, setCategories] = useState([])
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
+  const cameraInputRef = useRef(null)
 
   useEffect(() => {
     getCategories().then(({ data }) => setCategories(data)).catch(() => {})
   }, [])
 
   const handle = (field) => (e) => setForm((f) => ({ ...f, [field]: e.target.value }))
+
+  const handleImageFile = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploading(true)
+    setError('')
+    try {
+      const { data } = await uploadImage(file)
+      setForm((f) => ({ ...f, imageUrl: data.imageUrl }))
+    } catch {
+      setError('Error al subir la imagen. Intentá de nuevo.')
+    } finally {
+      setUploading(false)
+      e.target.value = ''
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -127,8 +147,55 @@ function ProductFormModal({ onClose, onCreated }) {
           </div>
 
           <div className={styles.field}>
-            <label>URL de imagen</label>
-            <input value={form.imageUrl} onChange={handle('imageUrl')} placeholder="https://..." />
+            <label>Imagen del producto</label>
+            <div className={styles.imageUpload}>
+              {form.imageUrl && (
+                <img src={form.imageUrl} alt="Vista previa" className={styles.imagePreview} />
+              )}
+              <div className={styles.imageButtons}>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageFile}
+                  style={{ display: 'none' }}
+                />
+                <input
+                  ref={cameraInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleImageFile}
+                  style={{ display: 'none' }}
+                />
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => fileInputRef.current.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? 'Subiendo...' : 'Elegir archivo'}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => cameraInputRef.current.click()}
+                  disabled={uploading}
+                >
+                  Sacar foto
+                </button>
+                {form.imageUrl && (
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setForm((f) => ({ ...f, imageUrl: '' }))}
+                    disabled={uploading}
+                  >
+                    Quitar
+                  </button>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className={styles.actions}>

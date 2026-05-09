@@ -18,14 +18,14 @@
   --color-text-secondary: #6b5c54;    /* Texto secundario: marrón cálido */
   --color-text-muted:     #b0a09a;    /* Texto deshabilitado/placeholder */
 
-  /* === ACENTO PRINCIPAL: coral/rosa del logo === */
-  --color-accent:         #d4706a;    /* Coral principal */
-  --color-accent-hover:   #c05a54;    /* Coral oscuro (hover) */
-  --color-accent-muted:   rgba(212, 112, 106, 0.12); /* Coral traslúcido (badges) */
+  /* === ACENTO PRINCIPAL: rosa del logo === */
+  --color-accent:         #c9607a;    /* Rosa principal */
+  --color-accent-hover:   #b04d67;    /* Rosa oscuro (hover) */
+  --color-accent-muted:   rgba(201, 96, 122, 0.12); /* Rosa traslúcido (badges) */
 
   /* === BORDES === */
   --color-border:         #e4dbd5;    /* Borde estándar */
-  --color-border-focus:   #d4706a;    /* Borde en focus (igual que accent) */
+  --color-border-focus:   #c9607a;    /* Borde en focus (igual que accent) */
 
   /* === SEMÁNTICOS === */
   --color-success:        #4a7c59;
@@ -50,7 +50,7 @@
   --shadow-sm:  0 1px 3px rgba(0,0,0,0.08);
   --shadow-md:  0 4px 16px rgba(0,0,0,0.10);
   --shadow-lg:  0 8px 40px rgba(0,0,0,0.14);
-  --shadow-accent: 0 0 20px rgba(212, 112, 106, 0.15);
+  --shadow-accent: 0 0 20px rgba(201, 96, 122, 0.18);
 
   /* === TRANSICIONES === */
   --transition: 0.2s ease;
