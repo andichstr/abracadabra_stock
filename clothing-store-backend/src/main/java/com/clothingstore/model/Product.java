@@ -1,27 +1,32 @@
 package com.clothingstore.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "product")
-@Data
+@Table(name = "products")
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 public class Product {
 
+    @EqualsAndHashCode.Include
+    @ToString.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ToString.Include
     @Column(nullable = false, length = 255)
     private String name;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
 
     @Column(name = "cost_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal costPrice;
@@ -29,25 +34,17 @@ public class Product {
     @Column(name = "sale_price", nullable = false, precision = 10, scale = 2)
     private BigDecimal salePrice;
 
-    @Column(name = "stock_quantity", nullable = false)
-    private Integer stockQuantity = 0;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(length = 10)
-    private String size;
-
-    @Column(length = 50)
-    private String color;
-
     @Column(name = "entry_date", nullable = false)
     private LocalDate entryDate;
 
-    @Column(name = "image_url", length = 500)
-    private String imageUrl;
-
+    @ToString.Include
     @Column(name = "qr_code", unique = true, length = 255)
     private String qrCode;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductVariant> variants = new ArrayList<>();
 }

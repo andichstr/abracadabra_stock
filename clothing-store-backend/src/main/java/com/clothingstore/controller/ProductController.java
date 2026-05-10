@@ -1,7 +1,10 @@
 package com.clothingstore.controller;
 
-import com.clothingstore.dto.ProductDTO;
+import com.clothingstore.constants.ApiRoutes;
+import com.clothingstore.dto.ProductRequestDTO;
+import com.clothingstore.dto.ProductResponseDTO;
 import com.clothingstore.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -13,14 +16,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping(ApiRoutes.PRODUCTS)
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductDTO> getAll(
+    public List<ProductResponseDTO> getAll(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
@@ -33,22 +36,22 @@ public class ProductController {
     }
 
     @GetMapping("/qr/{qrCode}")
-    public ProductDTO getByQrCode(@PathVariable String qrCode) {
+    public ProductResponseDTO getByQrCode(@PathVariable String qrCode) {
         return productService.findByQrCode(qrCode);
     }
 
     @GetMapping("/{id}")
-    public ProductDTO getById(@PathVariable Long id) {
+    public ProductResponseDTO getById(@PathVariable Long id) {
         return productService.findById(id);
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> create(@RequestBody ProductDTO dto) {
+    public ResponseEntity<ProductResponseDTO> create(@Valid @RequestBody ProductRequestDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ProductDTO update(@PathVariable Long id, @RequestBody ProductDTO dto) {
+    public ProductResponseDTO update(@PathVariable Long id, @Valid @RequestBody ProductRequestDTO dto) {
         return productService.update(id, dto);
     }
 

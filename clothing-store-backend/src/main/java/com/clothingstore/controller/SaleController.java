@@ -1,8 +1,10 @@
 package com.clothingstore.controller;
 
+import com.clothingstore.constants.ApiRoutes;
 import com.clothingstore.dto.SaleRequestDTO;
 import com.clothingstore.dto.SaleResponseDTO;
 import com.clothingstore.service.SaleService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sales")
+@RequestMapping(ApiRoutes.SALES)
 @RequiredArgsConstructor
 public class SaleController {
 
@@ -36,7 +38,7 @@ public class SaleController {
     }
 
     @PostMapping
-    public ResponseEntity<SaleResponseDTO> create(@RequestBody SaleRequestDTO request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(saleService.createSale(request));
+    public ResponseEntity<SaleResponseDTO> create(@Valid @RequestBody SaleRequestDTO request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(saleService.create(request));
     }
 }

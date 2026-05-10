@@ -11,6 +11,26 @@
 .imageSection {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.colorGallery {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.galleryItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.galleryLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-align: center;
 }
 
 .image {
@@ -78,4 +98,104 @@
 .actions {
   display: flex;
   gap: 12px;
+}
+
+.variantsSection {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+}
+
+.variantsTitle {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 14px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.variantTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.variantTable th,
+.variantTable td {
+  padding: 8px 16px;
+  text-align: center;
+  border: 1px solid var(--color-border);
+}
+
+.variantTable th {
+  background: var(--color-bg-elevated);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  vertical-align: bottom;
+}
+
+.colorThumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  display: block;
+  margin: 0 auto 6px;
+}
+
+.sizeCell {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-bg-elevated);
+}
+
+.cellEmpty {
+  color: var(--color-text-muted);
+}
+
+.cellZero {
+  color: #c0392b;
+  font-weight: 600;
+}
+
+.cellStock {
+  color: #1e8449;
+  font-weight: 600;
+}
+
+.variantList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.variantRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.stockOk {
+  color: #1e8449;
+  font-weight: 600;
+}
+
+.stockZero {
+  color: #c0392b;
+  font-weight: 600;
 }
