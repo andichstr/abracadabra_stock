@@ -1,14 +1,31 @@
 import { useNavigate } from 'react-router-dom'
 import styles from './ProductCard.module.css'
 
-function ProductCard({ product }) {
+function ProductCard({ product, selectable = false, selected = false, onToggle }) {
   const navigate = useNavigate()
 
   const totalStock = product.variants?.reduce((sum, v) => sum + (v.stockQuantity ?? 0), 0) ?? 0
   const sizes = [...new Set(product.variants?.map((v) => v.size).filter(Boolean) ?? [])]
 
+  const handleClick = () => {
+    if (selectable) {
+      onToggle?.(product.id)
+    } else {
+      navigate(`/stock/${product.id}`)
+    }
+  }
+
   return (
-    <div className={`card ${styles.productCard}`} onClick={() => navigate(`/stock/${product.id}`)}>
+    <div
+      className={`card ${styles.productCard} ${selected ? styles.selected : ''}`}
+      onClick={handleClick}
+      style={{ cursor: selectable ? 'pointer' : undefined }}
+    >
+      {selectable && (
+        <div className={styles.checkbox}>
+          {selected ? '✓' : ''}
+        </div>
+      )}
       {product.imageUrl && (
         <img
           src={product.imageUrl}

@@ -29,4 +29,9 @@ public interface ProductMapper {
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "variants", ignore = true)
     void updateEntity(ProductRequestDTO dto, @MappingTarget Product product);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "qrCode", ignore = true)
+    ProductVariant variantDtoToEntity(ProductVariantDTO dto);
 }

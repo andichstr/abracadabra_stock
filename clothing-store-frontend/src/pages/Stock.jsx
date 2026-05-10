@@ -6,6 +6,8 @@ import Pagination from '../components/Pagination'
 import { getProducts } from '../api/productApi'
 import { getCategories } from '../api/categoryApi'
 import { usePagination } from '../hooks/usePagination'
+import { exportQrPdf } from '../utils/qrPdfExport'
+import QrExportModal from '../components/QrExportModal'
 import styles from './Stock.module.css'
 
 const INITIAL_FILTERS = {
@@ -25,6 +27,9 @@ function Stock() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [selectionMode, setSelectionMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState(new Set())
+  const [showExportModal, setShowExportModal] = useState(false)
   const { page, setPage, totalPages, totalElements, pageSize, applyResponse } = usePagination()
   const debounceRef = useRef(null)
 
@@ -59,19 +64,65 @@ function Stock() {
     fetchProducts(filters, newPage)
   }, [filters, fetchProducts, setPage])
 
-  const handleProductCreated = (newProduct) => {
+  const handleProductCreated = () => {
     fetchProducts(filters, 0)
     setPage(0)
     setShowModal(false)
+  }
+
+  const toggleSelection = (id) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  const exitSelectionMode = () => {
+    setSelectionMode(false)
+    setSelectedIds(new Set())
+  }
+
+  const selectedProducts = products.filter((p) => selectedIds.has(p.id))
+
+  const handleExportQr = () => {
+    if (selectedIds.size === 0) return
+    setShowExportModal(true)
+  }
+
+  const handleConfirmExport = async (variantItems) => {
+    await exportQrPdf(variantItems)
+    setShowExportModal(false)
+    exitSelectionMode()
   }
 
   return (
     <div>
       <div className={styles.header}>
         <h1 className="page-title" style={{ marginBottom: 0 }}>Stock</h1>
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          + Agregar producto
-        </button>
+        <div style={{ display: 'flex', gap: 8 }}>
+          {selectionMode ? (
+            <>
+              <button className="btn btn-secondary" onClick={exitSelectionMode}>Cancelar</button>
+              <button
+                className="btn btn-primary"
+                onClick={handleExportQr}
+                disabled={selectedIds.size === 0}
+              >
+                {`Exportar QR (${selectedIds.size})`}
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="btn btn-secondary" onClick={() => setSelectionMode(true)}>
+                Exportar QR
+              </button>
+              <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+                + Agregar producto
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
       <FilterBar filters={filters} onChange={setFilters} categories={categories} />
@@ -85,7 +136,13 @@ function Stock() {
 
       <div className={styles.grid}>
         {products.map((p) => (
-          <ProductCard key={p.id} product={p} />
+          <ProductCard
+            key={p.id}
+            product={p}
+            selectable={selectionMode}
+            selected={selectedIds.has(p.id)}
+            onToggle={toggleSelection}
+          />
         ))}
       </div>
 
@@ -100,6 +157,14 @@ function Stock() {
         <ProductFormModal
           onClose={() => setShowModal(false)}
           onCreated={handleProductCreated}
+        />
+      )}
+
+      {showExportModal && (
+        <QrExportModal
+          products={selectedProducts}
+          onClose={() => setShowExportModal(false)}
+          onExport={handleConfirmExport}
         />
       )}
     </div>

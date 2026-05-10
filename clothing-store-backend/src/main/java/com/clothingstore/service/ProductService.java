@@ -4,6 +4,7 @@ import com.clothingstore.constants.ErrorMessages;
 import com.clothingstore.dto.ProductRequestDTO;
 import com.clothingstore.dto.ProductResponseDTO;
 import com.clothingstore.dto.ProductVariantDTO;
+import com.clothingstore.dto.ProductVariantScanDTO;
 import com.clothingstore.exception.ResourceNotFoundException;
 import com.clothingstore.mapper.ProductMapper;
 import com.clothingstore.model.Product;
@@ -128,6 +129,15 @@ public class ProductService implements GenericService<ProductResponseDTO, Produc
         productRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    public ProductVariantScanDTO findVariantByQrCode(String qrCode) {
+        ProductVariant v = variantRepository.findByQrCode(qrCode)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.VARIANT_NOT_FOUND_QR + qrCode));
+        Product p = v.getProduct();
+        return new ProductVariantScanDTO(v.getId(), v.getQrCode(), v.getSize(), v.getColor(),
+                v.getStockQuantity(), v.getImageUrl(), p.getId(), p.getName(), p.getSalePrice());
+    }
+
     private void applyVariants(Product product, List<ProductVariantDTO> variantDTOs) {
         if (variantDTOs == null || variantDTOs.isEmpty()) return;
         for (ProductVariantDTO dto : variantDTOs) {
@@ -137,6 +147,7 @@ public class ProductService implements GenericService<ProductResponseDTO, Produc
             v.setColor(dto.getColor());
             v.setStockQuantity(dto.getStockQuantity() != null ? dto.getStockQuantity() : 0);
             v.setImageUrl(dto.getImageUrl());
+            v.setQrCode(UUID.randomUUID().toString());
             product.getVariants().add(v);
         }
     }

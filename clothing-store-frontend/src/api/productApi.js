@@ -16,6 +16,8 @@ export const getProductById = (id) => axiosInstance.get(`/products/${id}`)
 
 export const getProductByQr = (qrCode) => axiosInstance.get(`/products/qr/${qrCode}`)
 
+export const getVariantByQr = (qrCode) => axiosInstance.get(`/products/variants/qr/${encodeURIComponent(qrCode)}`)
+
 export const createProduct = (data) => axiosInstance.post('/products', data)
 
 export const updateProduct = (id, data) => axiosInstance.put(`/products/${id}`, data)

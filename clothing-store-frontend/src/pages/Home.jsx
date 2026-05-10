@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import QRScanner from '../components/QRScanner'
 import Cart from '../components/Cart'
 import { useCart } from '../context/CartContext'
-import { getProductByQr } from '../api/productApi'
+import { getProductByQr, getVariantByQr } from '../api/productApi'
 import { createSale } from '../api/saleApi'
 import styles from './Home.module.css'
 
@@ -20,10 +20,38 @@ function Home() {
     if (lastScanned === qrCode) return
     setLastScanned(qrCode)
     setTimeout(() => setLastScanned(null), 1500)
+    setError('')
 
+    // Try variant QR first (new format — one QR per variant)
+    try {
+      const { data: variant } = await getVariantByQr(qrCode)
+      if (variant.stockQuantity === 0) {
+        const label = [variant.size, variant.color].filter(Boolean).join(' / ')
+        setError(`Sin stock: "${variant.productName}"${label ? ` (${label})` : ''}`)
+      } else {
+        dispatch({
+          type: 'ADD_ITEM',
+          payload: {
+            variantId: variant.variantId,
+            productId: variant.productId,
+            name: variant.productName,
+            size: variant.size,
+            color: variant.color,
+            salePrice: variant.salePrice,
+          },
+        })
+      }
+      return
+    } catch (err) {
+      if (err.response?.status !== 404) {
+        setError('Error al buscar el producto.')
+        return
+      }
+    }
+
+    // Fallback: product-level QR (legacy format — shows variant selector)
     try {
       const { data: product } = await getProductByQr(qrCode)
-      setError('')
       const available = product.variants?.filter((v) => v.stockQuantity > 0) ?? []
       if (available.length === 0) {
         setError(`"${product.name}" no tiene stock disponible.`)
@@ -32,12 +60,8 @@ function Home() {
       } else {
         setPendingProduct(product)
       }
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setError(`Producto no encontrado para el QR escaneado: "${qrCode}"`)
-      } else {
-        setError('Error al buscar el producto.')
-      }
+    } catch {
+      setError(`Producto no encontrado para el QR escaneado: "${qrCode}"`)
     }
   }
 

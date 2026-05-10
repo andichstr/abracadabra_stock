@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS product_variants (
     color          VARCHAR(50),
     stock_quantity INT NOT NULL DEFAULT 0,
     image_url      VARCHAR(500),
+    qr_code        VARCHAR(36) UNIQUE,
     CONSTRAINT fk_variant_product FOREIGN KEY (product_id) REFERENCES products(id)
 );
 

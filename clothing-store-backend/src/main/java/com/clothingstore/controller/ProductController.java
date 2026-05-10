@@ -4,6 +4,7 @@ import com.clothingstore.constants.ApiRoutes;
 import com.clothingstore.dto.PageResponse;
 import com.clothingstore.dto.ProductRequestDTO;
 import com.clothingstore.dto.ProductResponseDTO;
+import com.clothingstore.dto.ProductVariantScanDTO;
 import com.clothingstore.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,11 @@ public class ProductController {
         return PageResponse.of(
                 productService.findAll(categoryId, dateFrom, dateTo, priceMin, priceMax, size, color, pageable)
         );
+    }
+
+    @GetMapping("/variants/qr/{qrCode}")
+    public ProductVariantScanDTO getVariantByQrCode(@PathVariable String qrCode) {
+        return productService.findVariantByQrCode(qrCode);
     }
 
     @GetMapping("/qr/{qrCode}")

@@ -9,4 +9,5 @@ public class ProductVariantDTO {
     private String color;
     private Integer stockQuantity;
     private String imageUrl;
+    private String qrCode;
 }
