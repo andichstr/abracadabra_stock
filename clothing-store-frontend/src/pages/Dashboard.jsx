@@ -6,7 +6,7 @@ import {
 import { getSalesTodayByCategory, getSalesMonthByCategory, getSalesDaily } from '../api/statsApi'
 import styles from './Dashboard.module.css'
 
-const PALETTE = ['#7a3b6e', '#c4829c', '#4a2244', '#e8a0bf', '#b06090', '#d4a8cc', '#9b4d76', '#f0c8e0']
+const PALETTE = ['#FF8C42', '#FF6B9D', '#FFA552', '#F7629E', '#FFD1A9', '#FFB3D0', '#E8600A', '#FF9EC4']
 
 const fmt = (v) => `$${Number(v).toLocaleString('es-AR', { minimumFractionDigits: 0 })}`
 
@@ -44,10 +44,10 @@ function SalesPie({ data }) {
         </Pie>
         <Tooltip
           formatter={(value, name) => [fmt(value), name]}
-          contentStyle={{ borderRadius: 8, border: '1px solid #f0e6ee', fontSize: 13 }}
+          contentStyle={{ borderRadius: 8, border: '1px solid #FFE0CC', fontSize: 13 }}
         />
         <Legend
-          formatter={(value) => <span style={{ fontSize: 12, color: '#4a2244' }}>{value}</span>}
+          formatter={(value) => <span style={{ fontSize: 12, color: '#8B3A00' }}>{value}</span>}
         />
       </PieChart>
     </ResponsiveContainer>
@@ -58,16 +58,16 @@ function SalesBar({ data }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <BarChart data={data} margin={{ top: 4, right: 16, left: 8, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#f0e6ee" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#FFE0CC" />
         <XAxis
           dataKey="date"
           tickFormatter={formatDayLabel}
-          tick={{ fontSize: 11, fill: '#8a6a85' }}
+          tick={{ fontSize: 11, fill: '#A07855' }}
           interval="preserveStartEnd"
         />
         <YAxis
           tickFormatter={(v) => (v === 0 ? '0' : `$${(v / 1000).toFixed(0)}k`)}
-          tick={{ fontSize: 11, fill: '#8a6a85' }}
+          tick={{ fontSize: 11, fill: '#A07855' }}
           width={48}
         />
         <Tooltip
@@ -76,9 +76,9 @@ function SalesBar({ data }) {
             const [y, m, d] = label.split('-')
             return `${d}/${m}/${y}`
           }}
-          contentStyle={{ borderRadius: 8, border: '1px solid #f0e6ee', fontSize: 13 }}
+          contentStyle={{ borderRadius: 8, border: '1px solid #FFE0CC', fontSize: 13 }}
         />
-        <Bar dataKey="totalAmount" fill="#7a3b6e" radius={[4, 4, 0, 0]} maxBarSize={32} />
+        <Bar dataKey="totalAmount" fill="#FF8C42" radius={[4, 4, 0, 0]} maxBarSize={32} />
       </BarChart>
     </ResponsiveContainer>
   )
