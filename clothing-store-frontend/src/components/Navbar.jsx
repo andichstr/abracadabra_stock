@@ -14,8 +14,13 @@ function Navbar() {
       </div>
       <ul className={styles.links}>
         <li>
-          <NavLink to="/" className={({ isActive }) => isActive ? styles.active : ''}>
-            Inicio {cartCount > 0 && <span className={styles.badge}>{cartCount}</span>}
+          <NavLink to="/" end className={({ isActive }) => isActive ? styles.active : ''}>
+            Inicio
+          </NavLink>
+        </li>
+        <li>
+          <NavLink to="/vender" className={({ isActive }) => isActive ? styles.active : ''}>
+            Vender {cartCount > 0 && <span className={styles.badge}>{cartCount}</span>}
           </NavLink>
         </li>
         <li>
