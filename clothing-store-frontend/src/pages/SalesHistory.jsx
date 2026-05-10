@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import FilterBar from '../components/FilterBar'
 import SaleCard from '../components/SaleCard'
+import Pagination from '../components/Pagination'
 import { getSales } from '../api/saleApi'
+import { usePagination } from '../hooks/usePagination'
 import styles from './SalesHistory.module.css'
 
 const INITIAL_FILTERS = {
@@ -16,22 +18,35 @@ function SalesHistory() {
   const [filters, setFilters] = useState(INITIAL_FILTERS)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const { page, setPage, totalPages, totalElements, pageSize, applyResponse } = usePagination()
   const debounceRef = useRef(null)
 
-  const fetchSales = useCallback((f) => {
+  const fetchSales = useCallback((f, p) => {
     setLoading(true)
     setError('')
-    getSales(f)
-      .then(({ data }) => setSales(data))
+    getSales(f, p, pageSize)
+      .then(({ data }) => {
+        setSales(data.content)
+        applyResponse(data)
+      })
       .catch(() => setError('Error al cargar las ventas.'))
       .finally(() => setLoading(false))
-  }, [])
+  }, [pageSize, applyResponse])
 
+  // Filter changes: debounced, resets to page 0
   useEffect(() => {
     clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => fetchSales(filters), 400)
+    debounceRef.current = setTimeout(() => {
+      setPage(0)
+      fetchSales(filters, 0)
+    }, 400)
     return () => clearTimeout(debounceRef.current)
-  }, [filters, fetchSales])
+  }, [filters, fetchSales, setPage])
+
+  const handlePageChange = useCallback((newPage) => {
+    setPage(newPage)
+    fetchSales(filters, newPage)
+  }, [filters, fetchSales, setPage])
 
   return (
     <div>
@@ -51,6 +66,13 @@ function SalesHistory() {
           <SaleCard key={sale.id} sale={sale} />
         ))}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        onPageChange={handlePageChange}
+      />
     </div>
   )
 }

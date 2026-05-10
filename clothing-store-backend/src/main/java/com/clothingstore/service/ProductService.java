@@ -14,6 +14,8 @@ import com.clothingstore.repository.ProductVariantRepository;
 import com.clothingstore.repository.SaleItemRepository;
 import com.clothingstore.specification.ProductSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,15 +37,30 @@ public class ProductService implements GenericService<ProductResponseDTO, Produc
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponseDTO> findAll() {
-        return findAll(null, null, null, null, null, null, null);
+    public Page<ProductResponseDTO> findAll(Pageable pageable) {
+        return findAll(null, null, null, null, null, null, null, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<ProductResponseDTO> findAll(Long categoryId, LocalDate dateFrom, LocalDate dateTo,
+    public Page<ProductResponseDTO> findAll(Long categoryId, LocalDate dateFrom, LocalDate dateTo,
                                             BigDecimal priceMin, BigDecimal priceMax,
-                                            String size, String color) {
-        Specification<Product> spec = Specification
+                                            String size, String color, Pageable pageable) {
+        Specification<Product> spec = buildSpec(categoryId, dateFrom, dateTo, priceMin, priceMax, size, color);
+        Page<Product> page = spec != null
+                ? productRepository.findAll(spec, pageable)
+                : productRepository.findAll(pageable);
+        return page.map(productMapper::toResponse);
+    }
+
+    private Specification<Product> buildSpec(Long categoryId, LocalDate dateFrom, LocalDate dateTo,
+                                              BigDecimal priceMin, BigDecimal priceMax,
+                                              String size, String color) {
+        boolean hasFilters = categoryId != null || dateFrom != null || dateTo != null
+                || priceMin != null || priceMax != null
+                || (size != null && !size.isBlank())
+                || (color != null && !color.isBlank());
+        if (!hasFilters) return null;
+        return Specification
                 .where(ProductSpecification.hasCategory(categoryId))
                 .and(ProductSpecification.entryDateFrom(dateFrom))
                 .and(ProductSpecification.entryDateTo(dateTo))
@@ -52,9 +68,6 @@ public class ProductService implements GenericService<ProductResponseDTO, Produc
                 .and(ProductSpecification.salePriceMax(priceMax))
                 .and(ProductSpecification.hasSize(size))
                 .and(ProductSpecification.hasColorLike(color));
-        return productRepository.findAll(spec).stream()
-                .map(productMapper::toResponse)
-                .collect(Collectors.toList());
     }
 
     @Override

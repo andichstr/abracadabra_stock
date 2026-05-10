@@ -1,11 +1,14 @@
 package com.clothingstore.controller;
 
 import com.clothingstore.constants.ApiRoutes;
+import com.clothingstore.dto.PageResponse;
 import com.clothingstore.dto.ProductRequestDTO;
 import com.clothingstore.dto.ProductResponseDTO;
 import com.clothingstore.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +26,21 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductResponseDTO> getAll(
+    public PageResponse<ProductResponseDTO> getAll(
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
             @RequestParam(required = false) BigDecimal priceMin,
             @RequestParam(required = false) BigDecimal priceMax,
             @RequestParam(required = false) String size,
-            @RequestParam(required = false) String color
+            @RequestParam(required = false) String color,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int pageSize
     ) {
-        return productService.findAll(categoryId, dateFrom, dateTo, priceMin, priceMax, size, color);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return PageResponse.of(
+                productService.findAll(categoryId, dateFrom, dateTo, priceMin, priceMax, size, color, pageable)
+        );
     }
 
     @GetMapping("/qr/{qrCode}")

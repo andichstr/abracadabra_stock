@@ -8,10 +8,9 @@ import com.clothingstore.mapper.CategoryMapper;
 import com.clothingstore.model.Category;
 import com.clothingstore.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +20,8 @@ public class CategoryService implements GenericService<CategoryResponseDTO, Cate
     private final CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryResponseDTO> findAll() {
-        return categoryRepository.findAll().stream()
-                .map(categoryMapper::toResponse)
-                .collect(Collectors.toList());
+    public Page<CategoryResponseDTO> findAll(Pageable pageable) {
+        return categoryRepository.findAll(pageable).map(categoryMapper::toResponse);
     }
 
     @Override

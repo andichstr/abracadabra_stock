@@ -1,7 +1,7 @@
 import axiosInstance from './axiosInstance'
 
-export const getProducts = (filters = {}) => {
-  const params = {}
+export const getProducts = (filters = {}, page = 0, pageSize = 20) => {
+  const params = { page, pageSize }
   if (filters.categoryId) params.categoryId = filters.categoryId
   if (filters.dateFrom) params.dateFrom = filters.dateFrom
   if (filters.dateTo) params.dateTo = filters.dateTo

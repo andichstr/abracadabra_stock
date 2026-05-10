@@ -1,10 +1,11 @@
 package com.clothingstore.service;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface GenericService<RESPONSE, REQUEST, ID> {
 
-    List<RESPONSE> findAll();
+    Page<RESPONSE> findAll(Pageable pageable);
 
     RESPONSE findById(ID id);
 

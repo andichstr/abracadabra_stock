@@ -2,8 +2,10 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import FilterBar from '../components/FilterBar'
 import ProductCard from '../components/ProductCard'
 import ProductFormModal from '../components/ProductFormModal'
+import Pagination from '../components/Pagination'
 import { getProducts } from '../api/productApi'
 import { getCategories } from '../api/categoryApi'
+import { usePagination } from '../hooks/usePagination'
 import styles from './Stock.module.css'
 
 const INITIAL_FILTERS = {
@@ -23,29 +25,43 @@ function Stock() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const { page, setPage, totalPages, totalElements, pageSize, applyResponse } = usePagination()
   const debounceRef = useRef(null)
 
   useEffect(() => {
     getCategories().then(({ data }) => setCategories(data)).catch(() => {})
   }, [])
 
-  const fetchProducts = useCallback((f) => {
+  const fetchProducts = useCallback((f, p) => {
     setLoading(true)
     setError('')
-    getProducts(f)
-      .then(({ data }) => setProducts(data))
+    getProducts(f, p, pageSize)
+      .then(({ data }) => {
+        setProducts(data.content)
+        applyResponse(data)
+      })
       .catch(() => setError('Error al cargar los productos.'))
       .finally(() => setLoading(false))
-  }, [])
+  }, [pageSize, applyResponse])
 
+  // Filter changes: debounced, resets to page 0
   useEffect(() => {
     clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => fetchProducts(filters), 400)
+    debounceRef.current = setTimeout(() => {
+      setPage(0)
+      fetchProducts(filters, 0)
+    }, 400)
     return () => clearTimeout(debounceRef.current)
-  }, [filters, fetchProducts])
+  }, [filters, fetchProducts, setPage])
+
+  const handlePageChange = useCallback((newPage) => {
+    setPage(newPage)
+    fetchProducts(filters, newPage)
+  }, [filters, fetchProducts, setPage])
 
   const handleProductCreated = (newProduct) => {
-    setProducts((prev) => [newProduct, ...prev])
+    fetchProducts(filters, 0)
+    setPage(0)
     setShowModal(false)
   }
 
@@ -72,6 +88,13 @@ function Stock() {
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        totalElements={totalElements}
+        onPageChange={handlePageChange}
+      />
 
       {showModal && (
         <ProductFormModal

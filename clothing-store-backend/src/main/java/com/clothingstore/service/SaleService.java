@@ -13,7 +13,8 @@ import com.clothingstore.repository.ProductVariantRepository;
 import com.clothingstore.repository.SaleRepository;
 import com.clothingstore.specification.SaleSpecification;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,20 +33,29 @@ public class SaleService implements GenericService<SaleResponseDTO, SaleRequestD
 
     @Override
     @Transactional(readOnly = true)
-    public List<SaleResponseDTO> findAll() {
-        return findAll(null, null, null, null);
+    public Page<SaleResponseDTO> findAll(Pageable pageable) {
+        return findAll(null, null, null, null, pageable);
     }
 
     @Transactional(readOnly = true)
-    public List<SaleResponseDTO> findAll(LocalDate dateFrom, LocalDate dateTo,
-                                         BigDecimal amountMin, BigDecimal amountMax) {
-        Specification<Sale> spec = Specification
+    public Page<SaleResponseDTO> findAll(LocalDate dateFrom, LocalDate dateTo,
+                                         BigDecimal amountMin, BigDecimal amountMax,
+                                         Pageable pageable) {
+        Specification<Sale> spec = buildSpec(dateFrom, dateTo, amountMin, amountMax);
+        Page<Sale> page = spec != null
+                ? saleRepository.findAll(spec, pageable)
+                : saleRepository.findAll(pageable);
+        return page.map(saleMapper::toResponse);
+    }
+
+    private Specification<Sale> buildSpec(LocalDate dateFrom, LocalDate dateTo,
+                                          BigDecimal amountMin, BigDecimal amountMax) {
+        if (dateFrom == null && dateTo == null && amountMin == null && amountMax == null) return null;
+        return Specification
                 .where(SaleSpecification.saleDateFrom(dateFrom))
                 .and(SaleSpecification.saleDateTo(dateTo))
                 .and(SaleSpecification.amountMin(amountMin))
                 .and(SaleSpecification.amountMax(amountMax));
-        return saleRepository.findAll(spec, Sort.by(Sort.Direction.DESC, "saleDate"))
-                .stream().map(saleMapper::toResponse).collect(Collectors.toList());
     }
 
     @Override
