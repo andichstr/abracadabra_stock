@@ -1,5 +1,7 @@
 package com.clothingstore.controller;
 
+import com.clothingstore.constants.ApiRoutes;
+import com.clothingstore.constants.ErrorMessages;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/uploads")
+@RequestMapping(ApiRoutes.UPLOADS)
 public class UploadController {
 
     @Value("${app.upload.dir}")
@@ -20,7 +22,7 @@ public class UploadController {
     @PostMapping
     public ResponseEntity<Map<String, String>> upload(@RequestParam("image") MultipartFile file) throws IOException {
         if (file.isEmpty() || !file.getContentType().startsWith("image/")) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Solo se permiten imágenes."));
+            return ResponseEntity.badRequest().body(Map.of("error", ErrorMessages.ONLY_IMAGES_ALLOWED));
         }
 
         String original = file.getOriginalFilename();

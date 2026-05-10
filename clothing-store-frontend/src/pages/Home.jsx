@@ -14,6 +14,7 @@ function Home() {
   const [successMsg, setSuccessMsg] = useState('')
   const [loading, setLoading] = useState(false)
   const [lastScanned, setLastScanned] = useState(null)
+  const [pendingProduct, setPendingProduct] = useState(null)
 
   const handleScan = async (qrCode) => {
     if (lastScanned === qrCode) return
@@ -22,8 +23,15 @@ function Home() {
 
     try {
       const { data: product } = await getProductByQr(qrCode)
-      dispatch({ type: 'ADD_ITEM', payload: product })
       setError('')
+      const available = product.variants?.filter((v) => v.stockQuantity > 0) ?? []
+      if (available.length === 0) {
+        setError(`"${product.name}" no tiene stock disponible.`)
+      } else if (available.length === 1) {
+        addVariantToCart(product, available[0])
+      } else {
+        setPendingProduct(product)
+      }
     } catch (err) {
       if (err.response?.status === 404) {
         setError(`Producto no encontrado para el QR escaneado: "${qrCode}"`)
@@ -33,13 +41,32 @@ function Home() {
     }
   }
 
+  const addVariantToCart = (product, variant) => {
+    dispatch({
+      type: 'ADD_ITEM',
+      payload: {
+        variantId: variant.id,
+        productId: product.id,
+        name: product.name,
+        size: variant.size,
+        color: variant.color,
+        salePrice: product.salePrice,
+      },
+    })
+  }
+
+  const handleSelectVariant = (variant) => {
+    addVariantToCart(pendingProduct, variant)
+    setPendingProduct(null)
+  }
+
   const handleConfirmSale = async () => {
     if (cart.length === 0) return
     setLoading(true)
     setError('')
     try {
       const payload = {
-        items: cart.map((i) => ({ productId: i.id, quantity: i.quantity })),
+        items: cart.map((i) => ({ variantId: i.variantId, quantity: i.quantity })),
       }
       const { data: sale } = await createSale(payload)
       dispatch({ type: 'CLEAR_CART' })
@@ -75,6 +102,43 @@ function Home() {
         <section className={styles.cartSection}>
           <Cart onConfirm={handleConfirmSale} loading={loading} />
         </section>
+      </div>
+
+      {pendingProduct && (
+        <VariantSelector
+          product={pendingProduct}
+          onSelect={handleSelectVariant}
+          onClose={() => setPendingProduct(null)}
+        />
+      )}
+    </div>
+  )
+}
+
+function VariantSelector({ product, onSelect, onClose }) {
+  const available = product.variants.filter((v) => v.stockQuantity > 0)
+
+  return (
+    <div className={styles.variantOverlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className={styles.variantModal}>
+        <div className={styles.variantHeader}>
+          <h3>{product.name}</h3>
+          <button onClick={onClose} className={styles.variantClose}>✕</button>
+        </div>
+        <p className={styles.variantSubtitle}>Seleccioná la variante a agregar al carrito</p>
+        <ul className={styles.variantList}>
+          {available.map((v) => (
+            <li key={v.id}>
+              <button className={styles.variantBtn} onClick={() => onSelect(v)}>
+                <span className={styles.variantBtnLabel}>
+                  {v.size && <span className="badge badge-gray">{v.size}</span>}
+                  {v.color && <span className="badge badge-gray">{v.color}</span>}
+                </span>
+                <span className={styles.variantBtnStock}>Stock: {v.stockQuantity}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   )

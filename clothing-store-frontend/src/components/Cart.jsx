@@ -15,9 +15,13 @@ function Cart({ onConfirm, loading }) {
       <h2 className={styles.title}>Carrito</h2>
       <ul className={styles.list}>
         {cart.map((item) => (
-          <li key={item.id} className={styles.item}>
+          <li key={item.variantId} className={styles.item}>
             <div className={styles.itemInfo}>
               <span className={styles.itemName}>{item.name}</span>
+              <div className={styles.itemMeta}>
+                {item.size && <span className="badge badge-gray">{item.size}</span>}
+                {item.color && <span className="badge badge-gray">{item.color}</span>}
+              </div>
               <span className={styles.itemPrice}>${item.salePrice?.toFixed(2)} c/u</span>
             </div>
             <div className={styles.itemActions}>
@@ -26,8 +30,8 @@ function Cart({ onConfirm, loading }) {
                 style={{ padding: '4px 10px' }}
                 onClick={() =>
                   item.quantity > 1
-                    ? dispatch({ type: 'UPDATE_QTY', payload: { id: item.id, quantity: item.quantity - 1 } })
-                    : dispatch({ type: 'REMOVE_ITEM', payload: item.id })
+                    ? dispatch({ type: 'UPDATE_QTY', payload: { variantId: item.variantId, quantity: item.quantity - 1 } })
+                    : dispatch({ type: 'REMOVE_ITEM', payload: item.variantId })
                 }
               >
                 −
@@ -37,7 +41,7 @@ function Cart({ onConfirm, loading }) {
                 className="btn btn-secondary"
                 style={{ padding: '4px 10px' }}
                 onClick={() =>
-                  dispatch({ type: 'UPDATE_QTY', payload: { id: item.id, quantity: item.quantity + 1 } })
+                  dispatch({ type: 'UPDATE_QTY', payload: { variantId: item.variantId, quantity: item.quantity + 1 } })
                 }
               >
                 +
@@ -45,7 +49,7 @@ function Cart({ onConfirm, loading }) {
               <button
                 className="btn btn-danger"
                 style={{ padding: '4px 10px' }}
-                onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: item.id })}
+                onClick={() => dispatch({ type: 'REMOVE_ITEM', payload: item.variantId })}
               >
                 ✕
               </button>
