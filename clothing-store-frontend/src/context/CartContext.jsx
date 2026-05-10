@@ -5,13 +5,14 @@ const CartContext = createContext(null)
 function cartReducer(state, action) {
   switch (action.type) {
     case 'ADD_ITEM': {
+      const addQty = action.payload.quantity ?? 1
       const existing = state.find((i) => i.variantId === action.payload.variantId)
       if (existing) {
         return state.map((i) =>
-          i.variantId === action.payload.variantId ? { ...i, quantity: i.quantity + 1 } : i
+          i.variantId === action.payload.variantId ? { ...i, quantity: i.quantity + addQty } : i
         )
       }
-      return [...state, { ...action.payload, quantity: 1 }]
+      return [...state, { ...action.payload, quantity: addQty }]
     }
     case 'REMOVE_ITEM':
       return state.filter((i) => i.variantId !== action.payload)
