@@ -13,13 +13,9 @@ function Home() {
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
   const [loading, setLoading] = useState(false)
-  const [lastScanned, setLastScanned] = useState(null)
   const [pendingProduct, setPendingProduct] = useState(null)
 
   const handleScan = async (qrCode) => {
-    if (lastScanned === qrCode) return
-    setLastScanned(qrCode)
-    setTimeout(() => setLastScanned(null), 1500)
     setError('')
 
     // Try variant QR first (new format — one QR per variant)

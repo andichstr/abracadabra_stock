@@ -2,13 +2,21 @@ import { useEffect, useRef, useState } from 'react'
 import { Html5Qrcode } from 'html5-qrcode'
 import styles from './QRScanner.module.css'
 
+// Frames consecutivos sin QR antes de desbloquear el código actual
+const MISS_THRESHOLD = 5
+
 function QRScanner({ onScan }) {
   const scannerRef = useRef(null)
+  const lockedQrRef = useRef(null)   // QR actualmente bloqueado
+  const missCountRef = useRef(0)     // frames consecutivos sin detectar QR
   const [active, setActive] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (!active) return
+
+    lockedQrRef.current = null
+    missCountRef.current = 0
 
     const html5QrCode = new Html5Qrcode('qr-reader')
     scannerRef.current = html5QrCode
@@ -17,10 +25,19 @@ function QRScanner({ onScan }) {
       { facingMode: 'environment' },
       { fps: 10, qrbox: { width: 250, height: 250 } },
       (decodedText) => {
+        missCountRef.current = 0
+        if (lockedQrRef.current === decodedText) return
+        lockedQrRef.current = decodedText
         onScan(decodedText)
       },
-      () => {}
-    ).catch((err) => {
+      () => {
+        missCountRef.current++
+        if (missCountRef.current >= MISS_THRESHOLD) {
+          lockedQrRef.current = null
+          missCountRef.current = 0
+        }
+      }
+    ).catch(() => {
       setError('No se pudo acceder a la cámara. Verificá los permisos.')
       setActive(false)
     })
